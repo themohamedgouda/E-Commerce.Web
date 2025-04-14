@@ -7,16 +7,24 @@ namespace E_Commerce.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            #region Add services to the container
+
+            //Add services to the container
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen();
+
+            #endregion
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            #region Configure the HTTP request pipeline.
+
+            //Pipeline | Middleware
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -27,8 +35,9 @@ namespace E_Commerce.Web
 
             app.UseAuthorization();
 
-
             app.MapControllers();
+
+            #endregion
 
             app.Run();
         }
