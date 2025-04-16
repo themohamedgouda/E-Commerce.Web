@@ -1,4 +1,9 @@
 
+using DomainLayer.Contracts;
+using Microsoft.EntityFrameworkCore;
+using PrecedencesLayer;
+using PrecedencesLayer.Data;
+
 namespace E_Commerce.Web
 {
     public class Program
@@ -7,16 +12,31 @@ namespace E_Commerce.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            #region Add services to the container
+
+            //Add services to the container
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
+            builder.Services.AddDbContext<StoredDbContext>(Options =>
+            {
+                Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+            builder.Services.AddScoped<IDataSeeding, DataSeeding>();
+            #endregion
 
-            // Configure the HTTP request pipeline.
+            var app = builder.Build();
+            using var scoope = app.Services.CreateScope();
+            var ObjectOfDataSeeding =  scoope.ServiceProvider.GetRequiredService<IDataSeeding>();
+            ObjectOfDataSeeding.DataSeed();
+            #region Configure the HTTP request pipeline.
+
+            //Pipeline | Middleware
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -27,8 +47,9 @@ namespace E_Commerce.Web
 
             app.UseAuthorization();
 
-
             app.MapControllers();
+
+            #endregion
 
             app.Run();
         }
