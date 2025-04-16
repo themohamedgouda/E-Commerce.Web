@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using PrecedencesLayer.Data;
+
 namespace E_Commerce.Web
 {
     public class Program
@@ -16,6 +19,11 @@ namespace E_Commerce.Web
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<StoredDbContext>(Options =>
+            {
+                Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             #endregion
 
