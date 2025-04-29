@@ -41,8 +41,8 @@ namespace ServicesImplementationLayer
 
         public async Task<ProductDto?> GetProductByIdAsync(int id)
         {
-            var Repository = _unitOfWork.GetRepository<Product, int>();
-            var Product = Repository.GetByIdAsync(id);
+            var Repository =  _unitOfWork.GetRepository<Product, int>();
+            var Product = await Repository.GetByIdAsync(id);
             if (Product == null)
             {
                 return await Task.FromResult<ProductDto?>(null);
