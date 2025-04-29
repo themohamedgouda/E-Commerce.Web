@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using PrecedencesLayer;
 using PrecedencesLayer.Data;
 using PrecedencesLayer.Repositories;
+using ServicesAbstractionLayer;
+using ServicesImplementationLayer;
 using ServicesImplementationLayer.MappingProfiles;
 
 namespace E_Commerce.Web
@@ -31,6 +33,7 @@ namespace E_Commerce.Web
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();  
             builder.Services.AddAutoMapper(typeof(ServicesImplementationLayer.AssemblyReference).Assembly);
+            builder.Services.AddScoped<IServicesManager, ServicesManager>();  
             #endregion
 
             var app = builder.Build();
