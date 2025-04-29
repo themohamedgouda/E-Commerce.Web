@@ -13,42 +13,46 @@ namespace PrecedencesLayer
 {
     public class DataSeeding(StoredDbContext _dbContext) : IDataSeeding
     {
-        public void DataSeed()
+        public async Task DataSeedAsync()
         {
             try
             {
-                if (_dbContext.Database.GetPendingMigrations().Any())
+                var PendingMigrations = await _dbContext.Database.GetPendingMigrationsAsync();
+                if (PendingMigrations.Any())
                 {
-                    _dbContext.Database.Migrate();
+                    await _dbContext.Database.MigrateAsync();
                 }
                 if (!_dbContext.ProductBrands.Any())
                 {
-                    var ProductBrandData = File.ReadAllText(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\brands.json");
+                    //var ProductBrandData = await File.ReadAllTextAsync(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\brands.json");
+                    var ProductBrandData =  File.OpenRead(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\brands.json");
                     //Convert Data To C# Object | Serialization
-                    var ProductBrands = JsonSerializer.Deserialize<List<ProductBrand>>(ProductBrandData);
+                    var ProductBrands = await JsonSerializer.DeserializeAsync<List<ProductBrand>>(ProductBrandData);
 
                     if (ProductBrands is not null && ProductBrands.Any())
-                        _dbContext.ProductBrands.AddRange(ProductBrands);
+                       await  _dbContext.ProductBrands.AddRangeAsync(ProductBrands);
                 }
                 if (!_dbContext.ProductTypes.Any())
                 {
-                    var ProductTypeData = File.ReadAllText(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\types.json");
+                   // var ProductTypeData = File.ReadAllText(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\types.json");
+                    var ProductTypeData = File.OpenRead(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\types.json");
                     //Convert Data To C# Object | Serialization
-                    var ProductTypes = JsonSerializer.Deserialize<List<ProductType>>(ProductTypeData);
+                    var ProductTypes = await JsonSerializer.DeserializeAsync<List<ProductType>>(ProductTypeData);
 
                     if (ProductTypes is not null && ProductTypes.Any())
-                        _dbContext.ProductTypes.AddRange(ProductTypes);
+                        await _dbContext.ProductTypes.AddRangeAsync(ProductTypes);
                 }
                 if (!_dbContext.products.Any())
                 {
-                    var ProductData = File.ReadAllText(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\products.json");
+                    //var ProductData = File.ReadAllText(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\products.json");
+                    var ProductData = File.OpenRead(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\products.json");
                     //Convert Data To C# Object | Serialization
-                    var Products = JsonSerializer.Deserialize<List<Product>>(ProductData);
+                    var Products = await JsonSerializer.DeserializeAsync<List<Product>>(ProductData);
 
                     if (Products is not null && Products.Any())
-                        _dbContext.products.AddRange(Products);
+                     await   _dbContext.products.AddRangeAsync(Products);
                 }
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             catch(Exception ex) 
             {

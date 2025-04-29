@@ -1,4 +1,3 @@
-
 using DomainLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using PrecedencesLayer;
@@ -30,9 +29,18 @@ namespace E_Commerce.Web
             #endregion
 
             var app = builder.Build();
+
+            #region DataSeeding
+
+            //Data Seeding
+
             using var scoope = app.Services.CreateScope();
-            var ObjectOfDataSeeding =  scoope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            ObjectOfDataSeeding.DataSeed();
+
+            var ObjectOfDataSeeding = scoope.ServiceProvider.GetRequiredService<IDataSeeding>();
+
+            ObjectOfDataSeeding.DataSeedAsync();
+            #endregion
+
             #region Configure the HTTP request pipeline.
 
             //Pipeline | Middleware
@@ -40,6 +48,7 @@ namespace E_Commerce.Web
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger(); 
+
                 app.UseSwaggerUI();
             }
 
