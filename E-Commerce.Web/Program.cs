@@ -1,8 +1,12 @@
-
+using AutoMapper;
 using DomainLayer.Contracts;
 using Microsoft.EntityFrameworkCore;
 using PrecedencesLayer;
 using PrecedencesLayer.Data;
+using PrecedencesLayer.Repositories;
+using ServicesAbstractionLayer;
+using ServicesImplementationLayer;
+using ServicesImplementationLayer.MappingProfiles;
 
 namespace E_Commerce.Web
 {
@@ -27,23 +31,38 @@ namespace E_Commerce.Web
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();  
+            builder.Services.AddAutoMapper(typeof(ServicesImplementationLayer.AssemblyReference).Assembly);
+            builder.Services.AddScoped<IServicesManager, ServicesManager>();  
             #endregion
 
             var app = builder.Build();
+
+            #region DataSeeding
+
+            //Data Seeding
+
             using var scoope = app.Services.CreateScope();
-            var ObjectOfDataSeeding =  scoope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            ObjectOfDataSeeding.DataSeed();
+
+            var ObjectOfDataSeeding = scoope.ServiceProvider.GetRequiredService<IDataSeeding>();
+
+            ObjectOfDataSeeding.DataSeedAsync();
+            #endregion
+
             #region Configure the HTTP request pipeline.
 
             //Pipeline | Middleware
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
+                app.UseSwagger(); 
+
                 app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 
