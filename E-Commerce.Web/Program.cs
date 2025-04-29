@@ -39,7 +39,7 @@ namespace E_Commerce.Web
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
+                app.UseSwagger(); 
                 app.UseSwaggerUI();
             }
 
