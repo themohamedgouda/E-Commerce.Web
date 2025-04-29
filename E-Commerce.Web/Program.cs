@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PrecedencesLayer;
 using PrecedencesLayer.Data;
 using PrecedencesLayer.Repositories;
+using ServicesImplementationLayer.MappingProfiles;
 
 namespace E_Commerce.Web
 {
@@ -28,8 +29,8 @@ namespace E_Commerce.Web
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IMapper, Mapper>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();  
+            builder.Services.AddAutoMapper(typeof(ServicesImplementationLayer.AssemblyReference).Assembly);
             #endregion
 
             var app = builder.Build();
