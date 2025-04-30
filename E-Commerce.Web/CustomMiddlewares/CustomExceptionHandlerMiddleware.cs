@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DomainLayer.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Shared.ErrorMoldels;
 using System.Net;
 using System.Text.Json;
@@ -19,13 +20,17 @@ namespace E_Commerce.Web.CustomMiddlewares
             catch (Exception ex)
             {
                 logger.LogError(ex, "An error occurred while processing the request.");
-                httpcontext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                httpcontext.Response.StatusCode = ex switch {
+                    NotFoundExcpetion => (int)HttpStatusCode.NotFound,
+                    _ => (int)HttpStatusCode.InternalServerError
+                };
+
                 httpcontext.Response.ContentType = "application/json";
 
                 var errorResponse = new ErrorToReturn()
                 {
-                    StatusCode = (int)HttpStatusCode.InternalServerError,
-                    ErrorMessage = "An unexpected error occurred. Please try again later."
+                    StatusCode = httpcontext.Response.StatusCode,
+                    ErrorMessage = ex.Message
                 };
                 //var ResponseToReturn = JsonSerializer.Serialize(errorResponse);
                 //await httpcontext.Response.WriteAsync(ResponseToReturn);
