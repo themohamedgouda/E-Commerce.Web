@@ -42,7 +42,7 @@ namespace E_Commerce.Web
 
             //Data Seeding
 
-            using var scoope = app.Services.CreateScope();
+            using var scoope = app.Services.CreateScope(); 
 
             var ObjectOfDataSeeding = scoope.ServiceProvider.GetRequiredService<IDataSeeding>();
 
