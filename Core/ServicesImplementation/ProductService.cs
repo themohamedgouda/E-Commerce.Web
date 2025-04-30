@@ -34,7 +34,7 @@ namespace ServicesImplementationLayer
             return new PaginatedResult<ProductDto>(queryPrams.PageIndex , ProductCount, TotalCount, ProductDtos);
 
         }
-
+         
         public async Task<IEnumerable<TypeDto>> GetAllTypesAsync()
         {
             var Repository = _unitOfWork.GetRepository<ProductType, int>();
