@@ -14,9 +14,9 @@ namespace PresentationLayer.Controller
     public class ProductsController(IServicesManager _servicesManager) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts(int? BrandId, int? TypeId)
         {
-            var Products = await _servicesManager.ProductService.GetAllProductsAsync();
+            var Products = await _servicesManager.ProductService.GetAllProductsAsync(BrandId , TypeId);
             if (Products == null)
             {
                 return NotFound();
