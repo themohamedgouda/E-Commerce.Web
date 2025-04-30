@@ -30,7 +30,8 @@ namespace ServicesImplementationLayer
             var Products = await Repository.GetAllAsync(Speacification);
             var ProductDtos = _mapper.Map<IEnumerable<ProductDto>>(Products);
             var ProductCount = Products.Count();
-            return new PaginatedResult<ProductDto>(queryPrams.PageIndex , ProductCount,0, ProductDtos);
+            var TotalCount = await Repository.CountAsync(new ProductCountSpecifications(queryPrams));
+            return new PaginatedResult<ProductDto>(queryPrams.PageIndex , ProductCount, TotalCount, ProductDtos);
 
         }
 

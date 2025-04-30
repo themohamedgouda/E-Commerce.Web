@@ -30,6 +30,13 @@ namespace PrecedencesLayer.Repositories
             var query = await SpecificationEvaluator.CreateQuery(_dbContext.Set<TEntity>().AsQueryable(), specification).FirstOrDefaultAsync();
             return query;
         }
+
+        public async Task<int> CountAsync(ISpecification<TEntity, TKey> specification)
+        {
+            var query =  SpecificationEvaluator.CreateQuery(_dbContext.Set<TEntity>().AsQueryable(), specification);
+            return await query.CountAsync();
+
+        }
         #endregion
     }
 }
