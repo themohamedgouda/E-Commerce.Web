@@ -15,10 +15,10 @@ namespace PresentationLayer.Controller
     public class ProductsController(IServicesManager _servicesManager) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts(int? BrandId, int? TypeId , ProductSortingOptions sortingOptionsptions)
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts([FromQuery]ProductQueryPrams queryPrams)
 
         {
-            var Products = await _servicesManager.ProductService.GetAllProductsAsync(BrandId , TypeId, sortingOptionsptions);
+            var Products = await _servicesManager.ProductService.GetAllProductsAsync(queryPrams);
             if (Products == null)
             {
                 return NotFound();

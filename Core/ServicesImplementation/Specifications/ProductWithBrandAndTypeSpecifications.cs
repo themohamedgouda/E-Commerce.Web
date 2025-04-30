@@ -11,14 +11,14 @@ namespace ServicesImplementationLayer.Specifications
 {
      class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product, int>
     {
-        public ProductWithBrandAndTypeSpecifications(int? BrandId, int? TypeId, ProductSortingOptions sortingOptions) :
+        public ProductWithBrandAndTypeSpecifications(ProductQueryPrams queryPrams) :
             base(P =>
-            (!BrandId.HasValue || P.BrandId == BrandId) &&
-            (!TypeId.HasValue || P.TypeId == TypeId))
+            (!queryPrams.BrandId.HasValue || P.BrandId == queryPrams.BrandId) &&
+            (!queryPrams.TypeId.HasValue || P.TypeId == queryPrams.TypeId))
         {
             AddInclude(x => x.ProductBrand);
             AddInclude(x => x.ProductType);
-            switch (sortingOptions)
+            switch (queryPrams.SortingOptions)
             {
                 case ProductSortingOptions.PriceAsc:
                     AddOrderBy(x => x.Price);
