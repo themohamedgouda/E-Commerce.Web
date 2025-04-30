@@ -1,5 +1,6 @@
 using AutoMapper;
 using DomainLayer.Contracts;
+using E_Commerce.Web.CustomMiddlewares;
 using Microsoft.EntityFrameworkCore;
 using PrecedencesLayer;
 using PrecedencesLayer.Data;
@@ -52,6 +53,7 @@ namespace E_Commerce.Web
             #region Configure the HTTP request pipeline.
 
             //Pipeline | Middleware
+            app.UseMiddleware<CustomExceptionHandlerMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {
