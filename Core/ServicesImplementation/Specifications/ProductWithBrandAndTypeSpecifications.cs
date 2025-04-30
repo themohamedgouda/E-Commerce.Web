@@ -37,6 +37,7 @@ namespace ServicesImplementationLayer.Specifications
                     AddOrderBy(x => x.Id);
                     break;
             }
+            ApplyPagination( queryPrams.PageSize, queryPrams.PageIndex);
         }
         public ProductWithBrandAndTypeSpecifications(int id) : base(x => x.Id == id)
         {

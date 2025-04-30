@@ -35,6 +35,10 @@ namespace PrecedencesLayer
                 // Using Aggregate to apply all includes
                 query = specification.IncludeExpression.Aggregate(query, (current, include) => current.Include(include));
             }
+            if (specification.IsPaginated)
+            {
+                query = query.Skip(specification.Skip).Take(specification.Take);
+            }
             return query;
         }
     }
