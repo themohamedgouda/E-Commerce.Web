@@ -1,4 +1,5 @@
-﻿using Shared.DataTranseferObject;
+﻿using Shared;
+using Shared.DataTranseferObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace ServicesAbstractionLayer
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductDto>> GetAllProductsAsync();
+        Task<PaginatedResult<ProductDto>> GetAllProductsAsync(ProductQueryPrams queryPrams);
         Task<ProductDto?> GetProductByIdAsync(int id);
         Task<IEnumerable<TypeDto>> GetAllTypesAsync();
         Task<IEnumerable<BrandDto>> GetAllBrandsAsync();
