@@ -18,6 +18,14 @@ namespace PrecedencesLayer
             {
                 query = query.Where(specification.Criteria);
             }
+            if (specification.OrderBy != null)
+            {
+                query = query.OrderBy(specification.OrderBy);
+            }
+            else if (specification.OrderByDescending != null)
+            {
+                query = query.OrderByDescending(specification.OrderByDescending);
+            }
             if (specification.IncludeExpression != null && specification.IncludeExpression.Count > 0)
             {
                 //foreach (var includeExpression in specification.IncludeExpression)
