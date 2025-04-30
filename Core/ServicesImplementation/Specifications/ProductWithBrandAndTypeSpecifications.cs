@@ -14,7 +14,8 @@ namespace ServicesImplementationLayer.Specifications
         public ProductWithBrandAndTypeSpecifications(ProductQueryPrams queryPrams) :
             base(P =>
             (!queryPrams.BrandId.HasValue || P.BrandId == queryPrams.BrandId) &&
-            (!queryPrams.TypeId.HasValue || P.TypeId == queryPrams.TypeId))
+            (!queryPrams.TypeId.HasValue || P.TypeId == queryPrams.TypeId) &&
+            (string.IsNullOrEmpty(queryPrams.SearchValue) || P.Name.ToLower().Contains(queryPrams.SearchValue.ToLower())))
         {
             AddInclude(x => x.ProductBrand);
             AddInclude(x => x.ProductType);
