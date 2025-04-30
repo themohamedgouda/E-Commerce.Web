@@ -15,7 +15,7 @@ namespace PresentationLayer.Controller
     public class ProductsController(IServicesManager _servicesManager) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts([FromQuery]ProductQueryPrams queryPrams)
+        public async Task<ActionResult<PaginatedResult<ProductDto>>> GetAllProducts([FromQuery]ProductQueryPrams queryPrams)
 
         {
             var Products = await _servicesManager.ProductService.GetAllProductsAsync(queryPrams);
