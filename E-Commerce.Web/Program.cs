@@ -22,7 +22,7 @@ namespace E_Commerce.Web
 
             builder.Services.AddControllers();
 
-            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddEndpointsApiExplorer(); 
 
             builder.Services.AddSwaggerGen();
 
