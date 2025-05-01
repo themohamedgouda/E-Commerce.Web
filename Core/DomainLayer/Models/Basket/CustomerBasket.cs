@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DomainLayer.Models.Basket
-{
+{ 
     public class CustomerBasket
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
