@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using DomainLayer.Contracts;
-using DomainLayer.Models;
+using DomainLayer.Exceptions;
+using DomainLayer.Models.Product;
 using ServicesAbstractionLayer;
 using ServicesImplementationLayer.Specifications;
 using Shared;
-using Shared.DataTranseferObject;
+using Shared.DataTranseferObject.ProductoduleDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace ServicesImplementationLayer
             return new PaginatedResult<ProductDto>(queryPrams.PageIndex , ProductCount, TotalCount, ProductDtos);
 
         }
-
+         
         public async Task<IEnumerable<TypeDto>> GetAllTypesAsync()
         {
             var Repository = _unitOfWork.GetRepository<ProductType, int>();
@@ -51,7 +52,7 @@ namespace ServicesImplementationLayer
             var Product = await Repository.GetByIdAsync(Speacification);
             if (Product == null)
             {
-                return await Task.FromResult<ProductDto?>(null);
+               throw new ProductNotFoundException(id);
             }
             var ProductDto = _mapper.Map<ProductDto>(Product);
             return  await Task.FromResult<ProductDto?>(ProductDto);

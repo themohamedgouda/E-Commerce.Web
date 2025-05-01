@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainLayer.Models
+namespace DomainLayer.Exceptions
 {
-    public class ProductType : BaseEntity<int>
+    public abstract class NotFoundExcpetion(string message) : Exception(message)
     {
-        public string Name { get; set; } = string.Empty;
 
+      
     }
+    
 }

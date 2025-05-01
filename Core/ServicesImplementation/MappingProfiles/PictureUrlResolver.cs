@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using AutoMapper.Execution;
-using DomainLayer.Models;
+using DomainLayer.Models.Product;
 using Microsoft.Extensions.Configuration;
-using Shared.DataTranseferObject;
+using Shared.DataTranseferObject.ProductoduleDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

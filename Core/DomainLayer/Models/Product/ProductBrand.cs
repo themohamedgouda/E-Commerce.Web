@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DataTranseferObject
+namespace DomainLayer.Models.Product
 {
-    public class BrandDto
+    public class ProductBrand : BaseEntity<int>
     {
-        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
 
     }

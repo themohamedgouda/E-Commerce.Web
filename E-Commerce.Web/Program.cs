@@ -1,5 +1,9 @@
 using AutoMapper;
 using DomainLayer.Contracts;
+using E_Commerce.Web.CustomMiddlewares;
+using E_Commerce.Web.Extensions;
+using E_Commerce.Web.Factories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PrecedencesLayer;
 using PrecedencesLayer.Data;
@@ -7,12 +11,15 @@ using PrecedencesLayer.Repositories;
 using ServicesAbstractionLayer;
 using ServicesImplementationLayer;
 using ServicesImplementationLayer.MappingProfiles;
+using ServicesImplementationLayer.Specifications;
+using Shared.ErrorMoldels;
+using System.Net;
 
 namespace E_Commerce.Web
 {
-    public class Program
+    public  class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -22,42 +29,33 @@ namespace E_Commerce.Web
 
             builder.Services.AddControllers();
 
-            builder.Services.AddEndpointsApiExplorer(); 
+            builder.Services.AddSwaggerServices();
 
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddInfrastructureServices(builder.Configuration);
 
-            builder.Services.AddDbContext<StoredDbContext>(Options =>
-            {
-                Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
-            builder.Services.AddScoped<IDataSeeding, DataSeeding>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();  
-            builder.Services.AddAutoMapper(typeof(ServicesImplementationLayer.AssemblyReference).Assembly);
-            builder.Services.AddScoped<IServicesManager, ServicesManager>();  
+            builder.Services.AddApplicationServices();
+
+            builder.Services.AddWebApplicationServices();
+
             #endregion
 
             var app = builder.Build();
 
             #region DataSeeding
-
             //Data Seeding
+            await app.SeedDataAsync();
 
-            using var scoope = app.Services.CreateScope();
-
-            var ObjectOfDataSeeding = scoope.ServiceProvider.GetRequiredService<IDataSeeding>();
-
-            ObjectOfDataSeeding.DataSeedAsync();
             #endregion
 
             #region Configure the HTTP request pipeline.
 
             //Pipeline | Middleware
 
+            app.UseCustomApplicationMiddleware();
+
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger(); 
-
-                app.UseSwaggerUI();
+                app.UseSwaggerMiddleware();
             }
 
             app.UseHttpsRedirection();
