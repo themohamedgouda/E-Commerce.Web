@@ -1,4 +1,4 @@
-﻿using DomainLayer.Models;
+﻿using DomainLayer.Models.Product;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ServicesImplementationLayer.Specifications
 {
-     class ProductCountSpecifications : BaseSpecifications<Product, int>
+    class ProductCountSpecifications : BaseSpecifications<Product, int>
     {
         public ProductCountSpecifications(ProductQueryPrams queryPrams) : base(P =>
             (!queryPrams.BrandId.HasValue || P.BrandId == queryPrams.BrandId) &&

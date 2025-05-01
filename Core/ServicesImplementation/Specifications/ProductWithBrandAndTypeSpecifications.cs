@@ -1,15 +1,15 @@
-﻿using DomainLayer.Models;
-using DomainLayer.Contracts;
+﻿using DomainLayer.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Shared;
+using DomainLayer.Models.Product;
 
 namespace ServicesImplementationLayer.Specifications
 {
-     class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product, int>
+    class ProductWithBrandAndTypeSpecifications : BaseSpecifications<Product, int>
     {
         public ProductWithBrandAndTypeSpecifications(ProductQueryPrams queryPrams) :
             base(P =>
