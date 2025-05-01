@@ -5,7 +5,7 @@ using DomainLayer.Models.Product;
 using ServicesAbstractionLayer;
 using ServicesImplementationLayer.Specifications;
 using Shared;
-using Shared.DataTranseferObject;
+using Shared.DataTranseferObject.ProductoduleDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

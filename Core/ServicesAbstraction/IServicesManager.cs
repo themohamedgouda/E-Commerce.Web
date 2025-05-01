@@ -8,6 +8,7 @@ namespace ServicesAbstractionLayer
 {
     public interface IServicesManager
     {
-        IProductService ProductService { get; }  
+       public IProductService ProductService { get; }  
+       public IBasketServices BasketServices { get; }  
     }
 }

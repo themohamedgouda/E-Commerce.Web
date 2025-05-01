@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.DataTranseferObject
+namespace Shared.DataTranseferObject.ProductoduleDTO
 {
-    public class BrandDto
+    public class TypeDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-
     }
 }

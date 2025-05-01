@@ -8,7 +8,7 @@ namespace DomainLayer.Models.Basket
 { 
     public class CustomerBasket
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; }
         public ICollection<CustomerBasket> Items { get; set; } = [];
     }
 }

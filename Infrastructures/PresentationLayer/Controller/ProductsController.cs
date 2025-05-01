@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ServicesAbstractionLayer;
 using Shared;
-using Shared.DataTranseferObject;
+using Shared.DataTranseferObject.ProductoduleDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
