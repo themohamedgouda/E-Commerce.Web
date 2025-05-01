@@ -1,4 +1,6 @@
-﻿namespace PrecedencesLayer
+﻿using StackExchange.Redis;
+
+namespace PrecedencesLayer
 {
     public static class InfrastructureServicesRegisteration
     {
@@ -10,6 +12,11 @@
             });
             Services.AddScoped<IDataSeeding, DataSeeding>();
             Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            Services.AddScoped<IBasketRepository, BasketRepository>();
+            Services.AddSingleton<IConnectionMultiplexer>( (_) =>
+            {
+                 return  ConnectionMultiplexer.Connect(Configuration.GetConnectionString("RedisConnection"));
+            });
             return Services;
         }
     }
