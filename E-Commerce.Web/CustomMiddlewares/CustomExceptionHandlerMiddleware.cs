@@ -15,7 +15,7 @@ namespace E_Commerce.Web.CustomMiddlewares
         {
             try
             {
-                await next.Invoke(httpcontext);
+                await next.Invoke(httpcontext); 
                 await HandleNotFoundAsync(httpcontext);
             }
             catch (Exception ex)
@@ -38,7 +38,7 @@ namespace E_Commerce.Web.CustomMiddlewares
             var errorResponse = new ErrorToReturn()
             {
                 StatusCode = httpcontext.Response.StatusCode,
-                ErrorMessage = ex.Message
+                ErrorMessage = ex.Message 
             };
             //var ResponseToReturn = JsonSerializer.Serialize(errorResponse);
             //await httpcontext.Response.WriteAsync(ResponseToReturn);
