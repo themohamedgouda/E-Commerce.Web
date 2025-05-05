@@ -23,7 +23,7 @@ namespace ServicesImplementationLayer
         {
             var user = await _userManager.FindByEmailAsync(email);
            
-            return user is null;
+            return user is not null;
         }
             
 

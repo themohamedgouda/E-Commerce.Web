@@ -45,17 +45,16 @@ namespace PresentationLayer.Controller
         public async Task<ActionResult<AdderessDto>> GetCurrentUserAddress()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            var result = await servicesManager.AuthenticationService.GetCurrentUserAdderessAsync(email!);
+            var result = await servicesManager.AuthenticationService.GetCurrentUserAdderessAsync(email);
             return Ok(result);
         }
         [Authorize]
-        [HttpGet("Orders")]
+        [HttpPut("Address")]
         public async Task<ActionResult<AdderessDto>> UpdateCurrentUserAddress(AdderessDto adderessDto)
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
-            var result = await servicesManager.AuthenticationService.UpdatedCurrentUserAdderessAsync(email!, adderessDto);
+            var result = await servicesManager.AuthenticationService.UpdatedCurrentUserAdderessAsync(email, adderessDto);
             return Ok(result);
-
         }
 
 
