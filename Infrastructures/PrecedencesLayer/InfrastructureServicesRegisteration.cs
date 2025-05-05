@@ -1,4 +1,8 @@
-﻿using StackExchange.Redis;
+﻿using DomainLayer.Models.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using PrecedencesLayer.Identtiy;
+using StackExchange.Redis;
 
 namespace PrecedencesLayer
 {
@@ -17,6 +21,16 @@ namespace PrecedencesLayer
             {
                  return  ConnectionMultiplexer.Connect(Configuration.GetConnectionString("RedisConnection"));
             });
+            Services.AddDbContext<StoreIdentityDbContext>(Options =>
+            {
+                Options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection"));
+            });
+            Services.AddIdentityCore<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<StoreIdentityDbContext>();
+
+
+
             return Services;
         }
     }

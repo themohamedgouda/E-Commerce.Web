@@ -15,7 +15,7 @@ namespace E_Commerce.Web.CustomMiddlewares
         {
             try
             {
-                await next.Invoke(httpcontext);
+                await next.Invoke(httpcontext); 
                 await HandleNotFoundAsync(httpcontext);
             }
             catch (Exception ex)
@@ -27,22 +27,32 @@ namespace E_Commerce.Web.CustomMiddlewares
         }
         private static async Task HandleExceptionAsync(HttpContext httpcontext, Exception ex)
         {
-            httpcontext.Response.StatusCode = ex switch
+            var Response = new ErrorToReturn()
+            {
+                ErrorMessage = ex.Message
+            };
+            Response.StatusCode = ex switch
             {
                 NotFoundExcpetion => (int)HttpStatusCode.NotFound,
+                UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
+                BadRequestException badRequestException => GetBadRequestErrors(badRequestException, Response),
                 _ => (int)HttpStatusCode.InternalServerError
             };
 
-            httpcontext.Response.ContentType = "application/json";
+           // httpcontext.Response.ContentType = "application/json";
 
-            var errorResponse = new ErrorToReturn()
-            {
-                StatusCode = httpcontext.Response.StatusCode,
-                ErrorMessage = ex.Message
-            };
+           
             //var ResponseToReturn = JsonSerializer.Serialize(errorResponse);
             //await httpcontext.Response.WriteAsync(ResponseToReturn);
-            await httpcontext.Response.WriteAsJsonAsync(errorResponse);
+            httpcontext.Response.StatusCode = Response.StatusCode;
+            await httpcontext.Response.WriteAsJsonAsync(Response);
+        }
+
+        private static int GetBadRequestErrors(BadRequestException badRequestException, ErrorToReturn response)
+        {
+            response.Errors = badRequestException.Errors;
+            return StatusCodes.Status400BadRequest;
+
         }
 
         private static async Task HandleNotFoundAsync(HttpContext httpcontext)
