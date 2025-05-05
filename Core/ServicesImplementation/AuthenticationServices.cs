@@ -1,17 +1,21 @@
 ﻿using DomainLayer.Exceptions;
 using DomainLayer.Models.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using ServicesAbstractionLayer;
 using Shared.DataTranseferObject.IdentityModuleDto;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ServicesImplementationLayer
 {
-    public class AuthenticationServices(UserManager<ApplicationUser> _userManager) : IAuthenticationServices
+    public class AuthenticationServices(UserManager<ApplicationUser> _userManager ,IConfiguration _configuration) : IAuthenticationServices
     {
         public async Task<UserDto> LoginAsync(LoginDto loginDto)
         {
@@ -21,15 +25,15 @@ namespace ServicesImplementationLayer
             {
                 throw new UnauthorizedException();
             }
-            var token = CreateTokenAsync(user);
+            var token = await CreateTokenAsync(user);
             return new UserDto
             {
-                Email = user.Email,
-                Token = token,
+                Email = user.Email!,
+                Token =  token,
                 DisplayName = user.DisplayName
             };
         }
-        public async  Task<UserDto> RegisterAsync(RegisterDto registerDto)
+        public async Task<UserDto> RegisterAsync(RegisterDto registerDto)
         {
             var user = new ApplicationUser
             {
@@ -44,22 +48,36 @@ namespace ServicesImplementationLayer
                 return new UserDto
                 {
                     Email = user.Email,
-                    Token = CreateTokenAsync(user),
+                    Token = await CreateTokenAsync(user),
                     DisplayName = user.DisplayName
                 };
             }
-           var errors = result.Errors.Select(e => e.Description).ToList();
+            var errors = result.Errors.Select(e => e.Description).ToList();
             throw new BadRequestException(errors);
 
         }
-        private static string CreateTokenAsync(ApplicationUser user)
+        private async Task<string> CreateTokenAsync(ApplicationUser user)
         {
-            // Here you would create a JWT token using your preferred library
-            // For example, using System.IdentityModel.Tokens.Jwt
-            // This is just a placeholder implementation
-            return "GeneratedTokenForUser"; // Replace with actual token generation logic
-
+            var Cliams = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.Name, user.UserName !),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            };
+            var Roples = await _userManager.GetRolesAsync(user);
+            foreach (var role in Roples)
+            {
+                Cliams.Add(new Claim(ClaimTypes.Role, role));
+            }
+            var SectetKey = _configuration.GetSection("JwdOptions")["SecretKey"];
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SectetKey));
+            var Credes = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(issuer: _configuration.GetSection("JwdOptions")["Issuer"]
+                , claims: Cliams
+                , audience: _configuration.GetSection("JwdOptions")["Audience"]
+                , expires: DateTime.Now.AddHours(1)
+                , signingCredentials: Credes);
+            return  new JwtSecurityTokenHandler().WriteToken(token);
         }
-
     }
 }
