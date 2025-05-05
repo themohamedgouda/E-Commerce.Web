@@ -40,7 +40,7 @@ namespace E_Commerce.Web
 
             builder.Services.AddWebApplicationServices();
 
-            builder.Services.AddJWTServices(builder.Configuration);
+            builder.Services.AddJWTServices(builder.Configuration); 
 
             #endregion
 
