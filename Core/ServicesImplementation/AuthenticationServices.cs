@@ -1,6 +1,8 @@
-﻿using DomainLayer.Exceptions;
+﻿using AutoMapper;
+using DomainLayer.Exceptions;
 using DomainLayer.Models.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ServicesAbstractionLayer;
@@ -15,8 +17,40 @@ using System.Threading.Tasks;
 
 namespace ServicesImplementationLayer
 {
-    public class AuthenticationServices(UserManager<ApplicationUser> _userManager ,IConfiguration _configuration) : IAuthenticationServices
+    public class AuthenticationServices(UserManager<ApplicationUser> _userManager ,IConfiguration _configuration , IMapper mapper) : IAuthenticationServices
     {
+        public async Task<bool> CheckEmailAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+           
+            return user is null;
+        }
+            
+
+        public async Task<AdderessDto> GetCurrentUserAdderessAsync(string email)
+        {
+            var user = await _userManager.Users.Include(U => U.Address)
+                .FirstOrDefaultAsync(U => U.Email == email) ??  throw new UserNotFoundException(email); ;
+
+            if(user.Address is not null)
+                return mapper.Map<AdderessDto>(user.Address);
+            throw new AdderessNotFoundException(email);
+        }
+
+        public async Task<UserDto> GetCurrentUserAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email) ?? throw new UserNotFoundException(email);
+            return new UserDto()
+            {
+                Email = user.Email,
+                DisplayName = user.DisplayName,
+                Token = await CreateTokenAsync(user),
+
+            };
+
+
+        }
+
         public async Task<UserDto> LoginAsync(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email) ?? throw new UserNotFoundException(loginDto.Email);
@@ -56,6 +90,29 @@ namespace ServicesImplementationLayer
             throw new BadRequestException(errors);
 
         }
+
+        public async Task<AdderessDto> UpdatedCurrentUserAdderessAsync(string email, AdderessDto adderessDto)
+        {
+            var user = await _userManager.Users.Include(U => U.Address)
+                .FirstOrDefaultAsync(U => U.Email == email) ?? throw new UserNotFoundException(email); ;
+            if (user.Address is not null)
+            {
+                user.Address.City = adderessDto.City;
+                user.Address.Street = adderessDto.Street;
+                user.Address.Country = adderessDto.Country;
+                user.Address.FirstName = adderessDto.FirstName;
+                user.Address.LastName = adderessDto.LastName;
+            }
+            else
+            {
+                user.Address =  mapper.Map<AdderessDto , Address>(adderessDto);
+
+
+            }
+            var result = await _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user);
+            return mapper.Map<AdderessDto>(user.Address);
+        } 
         private async Task<string> CreateTokenAsync(ApplicationUser user)
         {
             var Cliams = new List<Claim>
