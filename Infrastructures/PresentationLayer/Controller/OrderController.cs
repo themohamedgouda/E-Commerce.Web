@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace PresentationLayer.Controller
 {
+    [Authorize]
     public class OrderController(IServicesManager _servicesManager) : APIBaseController
     {
-        [Authorize]
         [HttpPost]
         public async Task<ActionResult<OrderToReturnDto>> CreateOrder([FromBody] OrderDto orderDto)
         {
@@ -21,12 +21,26 @@ namespace PresentationLayer.Controller
             var order = await _servicesManager.OrderServices.CreateOrderAsync(orderDto, Email);
             return Ok(order);
         }
+        [AllowAnonymous]
         [HttpGet("DelivaryMethods")]
         public async Task<ActionResult<IEnumerable<DeliveryMethodDto>>> GetDelivaryMethods()
         {
-            var delivaryMethods = await _servicesManager.OrderServices.ge;
+            var delivaryMethods = await _servicesManager.OrderServices.GetDelivaryMethodsAsync();
             return Ok(delivaryMethods);
+        }
 
+        [HttpGet()]
+        public async Task<ActionResult<OrderToReturnDto>> GetAllOrder()
+        {
+            var Email = GetUserEmailFromToken();
+            var order = await _servicesManager.OrderServices.GetAllOrdersAsync(Email);
+            return Ok(order);
+        }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<OrderToReturnDto>> GetOrderById(Guid id)
+        {
+            var order = await _servicesManager.OrderServices.GetOrderByIdAsync(id);
+            return Ok(order);
         }
 
     }
