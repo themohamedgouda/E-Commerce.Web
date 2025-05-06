@@ -17,9 +17,11 @@ namespace ServicesImplementationLayer
         private readonly Lazy<IProductService> _LazyProductService = new Lazy<IProductService>(() => new ProductService(_unitOfWork , _mapper));
         private readonly Lazy<IBasketServices> _LazyBasketServices = new Lazy<IBasketServices>(() => new BasketServices(_basketRepository, _mapper));
         private readonly Lazy<IAuthenticationServices> _LazyAuthenticationServices = new Lazy<IAuthenticationServices>(() => new AuthenticationServices(_userManager, _configuration , _mapper));
+        private readonly Lazy<IOrderServices> _LazyOrderServices = new Lazy<IOrderServices>(() => new OrderServices(_mapper, _basketRepository, _unitOfWork));
         public IProductService ProductService => _LazyProductService.Value;
         public IBasketServices BasketServices => _LazyBasketServices.Value;
         public IAuthenticationServices AuthenticationService => _LazyAuthenticationServices.Value;
+        public IOrderServices OrderServices => _LazyOrderServices.Value;
     }
     
 }

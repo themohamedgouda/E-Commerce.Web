@@ -1,5 +1,6 @@
 ﻿using DomainLayer.Contracts;
 using DomainLayer.Models.Identity;
+using DomainLayer.Models.Order;
 using DomainLayer.Models.Product;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -54,6 +55,16 @@ namespace PrecedencesLayer
 
                     if (Products is not null && Products.Any())
                      await   _dbContext.products.AddRangeAsync(Products);
+                }
+                if (!_dbContext.Set<DelivaryMethod>().Any())
+                {
+                    //var ProductData = File.ReadAllText(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\products.json");
+                    var DelivaryMethodDataStream = File.OpenRead(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\delivery.json");
+                    //Convert Data To C# Object | Serialization
+                    var DelivaryMethods = await JsonSerializer.DeserializeAsync<List<DelivaryMethod>>(DelivaryMethodDataStream);
+
+                    if (DelivaryMethods is not null && DelivaryMethods.Any())
+                        await _dbContext.Set<DelivaryMethod>().AddRangeAsync(DelivaryMethods);
                 }
                 await _dbContext.SaveChangesAsync();
             }
