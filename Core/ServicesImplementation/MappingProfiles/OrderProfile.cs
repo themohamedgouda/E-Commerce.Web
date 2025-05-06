@@ -20,8 +20,8 @@ namespace ServicesImplementationLayer.MappingProfiles
             CreateMap<OrderItem, OrderItemDto>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
                 .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<OrderItemPictureUrlResolver>());
-
-
+            CreateMap<DelivaryMethod, DeliveryMethodDto>();
+                
 
         }
     }

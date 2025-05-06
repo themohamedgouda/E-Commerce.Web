@@ -5,6 +5,7 @@ using DomainLayer.Models.Basket;
 using DomainLayer.Models.Order;
 using DomainLayer.Models.Product;
 using ServicesAbstractionLayer;
+using ServicesImplementationLayer.Specifications.OrderModuleSpecifications;
 using Shared.DataTranseferObject.IdentityModuleDto;
 using Shared.DataTranseferObject.OrderModuleDto;
 using System;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace ServicesImplementationLayer
 {
-    public class OrderServices(IMapper _mapper , IBasketRepository _basketRepository , IUnitOfWork _unitOfWork) : IOrderServices
+    public class OrderServices(IMapper _mapper , IBasketRepository _basketRepository , IUnitOfWork _unitOfWork ) : IOrderServices
     {
         public async Task<OrderToReturnDto> CreateOrderAsync(OrderDto orderDto, string email)
         {
@@ -52,6 +53,31 @@ namespace ServicesImplementationLayer
                 Price = product.Price,
                 Quantity = item.Quantity
             };
+        }
+
+        public async Task<IEnumerable<DeliveryMethodDto>> GetDelivaryMethodsAsync()
+        {
+            var DelivaryMethods = await _unitOfWork.GetRepository<DelivaryMethod, int>().GetAllAsync();
+            return _mapper.Map<IEnumerable<DelivaryMethod>, IEnumerable<DeliveryMethodDto>>(DelivaryMethods);
+        }
+
+        public async Task<IEnumerable<OrderToReturnDto>> GetAllOrdersAsync(string email)
+        {
+            var Spec = new OrderSpecification(email);
+            var Orders = await  _unitOfWork.GetRepository<Order, Guid>().GetAllAsync(Spec);
+            return _mapper.Map<IEnumerable<Order>, IEnumerable<OrderToReturnDto>>(Orders);
+        }
+
+        public async Task<OrderToReturnDto> GetOrderByIdAsync(Guid id)
+        {
+            var spec = new OrderSpecification(id);
+            var Order = await _unitOfWork.GetRepository<Order, Guid>().GetByIdAsync(spec);
+            if (Order == null)
+            {
+                throw new OrderNotFoundException(id);
+            }
+            return _mapper.Map<Order, OrderToReturnDto>(Order);
+
         }
     }
 }

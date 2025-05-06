@@ -20,7 +20,12 @@ namespace PresentationLayer.Controller
             var Email = GetUserEmailFromToken();
             var order = await _servicesManager.OrderServices.CreateOrderAsync(orderDto, Email);
             return Ok(order);
-
+        }
+        [HttpGet("DelivaryMethods")]
+        public async Task<ActionResult<IEnumerable<DeliveryMethodDto>>> GetDelivaryMethods()
+        {
+            var delivaryMethods = await _servicesManager.OrderServices.ge;
+            return Ok(delivaryMethods);
 
         }
 
