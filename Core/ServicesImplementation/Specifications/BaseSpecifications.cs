@@ -36,10 +36,8 @@ namespace ServicesImplementationLayer.Specifications
         {
             OrderBy = orderByExpression;
         }
-        protected void AddOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression)
-        {
-            OrderByDescending = orderByDescendingExpression;
-        }
+        protected void AddOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression) =>  OrderByDescending = orderByDescendingExpression;
+        
 
         #endregion
 

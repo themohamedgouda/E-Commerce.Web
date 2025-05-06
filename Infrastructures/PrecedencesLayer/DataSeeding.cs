@@ -1,7 +1,11 @@
 ﻿using DomainLayer.Contracts;
+using DomainLayer.Models.Identity;
+using DomainLayer.Models.Order;
 using DomainLayer.Models.Product;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PrecedencesLayer.Data;
+using PrecedencesLayer.Identtiy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace PrecedencesLayer
 {
-    public class DataSeeding(StoredDbContext _dbContext) : IDataSeeding
+    public class DataSeeding(StoredDbContext _dbContext , UserManager<ApplicationUser> _userManager , RoleManager<IdentityRole> _roleManager , StoreIdentityDbContext _identityDbContext) : IDataSeeding
     {
         public async Task DataSeedAsync()
         {
@@ -52,12 +56,62 @@ namespace PrecedencesLayer
                     if (Products is not null && Products.Any())
                      await   _dbContext.products.AddRangeAsync(Products);
                 }
+                if (!_dbContext.Set<DelivaryMethod>().Any())
+                {
+                    //var ProductData = File.ReadAllText(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\products.json");
+                    var DelivaryMethodDataStream = File.OpenRead(@"..\Infrastructures\PrecedencesLayer\Data\DataSeed\delivery.json");
+                    //Convert Data To C# Object | Serialization
+                    var DelivaryMethods = await JsonSerializer.DeserializeAsync<List<DelivaryMethod>>(DelivaryMethodDataStream);
+
+                    if (DelivaryMethods is not null && DelivaryMethods.Any())
+                        await _dbContext.Set<DelivaryMethod>().AddRangeAsync(DelivaryMethods);
+                }
                 await _dbContext.SaveChangesAsync();
             }
             catch(Exception ex) 
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        public async Task IdentityDataAsync()
+        {
+          try
+          {
+                if (!_roleManager.Roles.Any())
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                    await _roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
+                }
+                if (!_userManager.Users.Any())
+                {
+                    var User01 = new ApplicationUser()
+                    {
+                        Email = "themohamedgouda@gmail.com",
+                        DisplayName = "Mohamed Gouda",
+                        PhoneNumber = "01000000000",
+                        UserName = "MohamedGouda",
+
+                    };
+                    var User02 = new ApplicationUser()
+                    {
+                        Email = "salmagouda@gmail.com",
+                        DisplayName = "Salma Gouda",
+                        PhoneNumber = "01000000000",
+                        UserName = "SalmaGouda",
+                    };
+
+                    await _userManager.CreateAsync(User01, "P@ssw0rd");
+                    await _userManager.CreateAsync(User02, "P@ssw0rd");
+                    await _userManager.AddToRoleAsync(User01, "Admin");
+                    await _userManager.AddToRoleAsync(User02, "SuperAdmin");
+                }
+                await _identityDbContext.SaveChangesAsync();
+          }
+            catch (Exception ex)
+            {
+            }
+
         }
     }
 }

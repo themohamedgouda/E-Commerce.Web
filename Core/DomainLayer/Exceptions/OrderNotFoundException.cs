@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DomainLayer.Contracts
+namespace DomainLayer.Exceptions
 {
-    public interface IDataSeeding
+    public class OrderNotFoundException(Guid id) : NotFoundExcpetion($"Order with id {id} not found")
     {
-        Task DataSeedAsync();
-        Task IdentityDataAsync();
     }
 }
